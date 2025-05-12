@@ -13,10 +13,10 @@
 // </summary>
 //-----------------------------------------------------------------------
 
-using System;
-
 namespace Console.SQLiteHelper
 {
+    using System;
+
     public class Program
     {
         private static void Main(string[] args)
@@ -24,7 +24,7 @@ namespace Console.SQLiteHelper
             do
             {
                 Console.Clear();
-                Console.WriteLine("1. Menüpunkt 1");
+                Console.WriteLine("1. Create Database and Table");
                 Console.WriteLine("2. Menüpunkt 2");
                 Console.WriteLine("X. Beenden");
 

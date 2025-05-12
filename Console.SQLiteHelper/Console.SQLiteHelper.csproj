@@ -5,7 +5,8 @@
     <TargetFramework>net8.0-windows</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
-    <ApplicationIcon>Resources\Console.Template.ico</ApplicationIcon>
+    <UseWPF>true</UseWPF>
+      <ApplicationIcon>Resources\Console.Template.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,7 +14,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="_Doc\" />
+    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.119" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="DataCore\" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">

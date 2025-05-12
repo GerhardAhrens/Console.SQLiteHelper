@@ -9,8 +9,8 @@ In diesem Repository sammle ich Klassen und Funktionen rund um die [SQLite Core 
 
 # RecordSet
 
-diese Klasse soll die Rückgabe von Datenbankergebnisse vereinfachen. Dazu kann ein Datentyp gewählt werden, in dem ich die Daten aus einer SQL Anweisung zurück bekommen will.
-
+Diese Klasse soll die Rückgabe von Datenbankergebnisse vereinfachen. Dazu kann ein Datentyp gewählt werden, in dem ich die Daten aus einer SQL Anweisung zurück bekommen will.
+Mit Get() können Daten gelesen und mit Set() kann ein einzelner Wert auf die Datenbank geschrieben werden.
 ```csharp
 int result = 0;
 
@@ -33,5 +33,34 @@ int result = 0;
 string sql = "select last_number from user_sequences where sequence_NAME = 'MAIN'";
 result = new RecordSet<int>(<ConnectionObject>, sql, RecordSetResult.Scalar).Get().Result;
 ```
+Vereinfachtes Schreiben eines einzelnen Wertes
+```csharp
+int result = 0;
 
+string sqlText = $"UPDATE {TABLENAME} SET STATUS_ID = 100  WHERE ID = 1";
+result = new RecordSet<int>(this.Connection, sqlText, RecordSetResult.Scalar).Set().Result;
+```
+
+
+Mögliche Rückgabetypen (bei Get())
+
+| Typ  |
+|:----------------|
+| DataRow         |
+| DataTable       |
+| ICollectionView |
+| string |
+| DateTime |
+| bool |
+| int,long |
+| decimal,double, float, Single|
+
+Mögliche Übergabetypen (bei Set())
+
+| Typ  |
+|:----------------|
+| int, long         |
+| decimal, double, float     |
+| bool         |
+| string|
 

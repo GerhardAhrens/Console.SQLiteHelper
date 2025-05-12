@@ -349,6 +349,26 @@ namespace Console.SQLiteHelper
             {
                 result = true;
             }
+            else if (type.Name == typeof(decimal).Name)
+            {
+                result = true;
+            }
+            else if (type.Name == typeof(double).Name)
+            {
+                result = true;
+            }
+            else if (type.Name == typeof(float).Name)
+            {
+                result = true;
+            }
+            else if (type.Name == typeof(string).Name)
+            {
+                result = true;
+            }
+            else if (type.Name == typeof(DateTime).Name)
+            {
+                result = true;
+            }
 
             return result;
         }

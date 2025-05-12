@@ -19,6 +19,8 @@
 
   <ItemGroup>
     <Folder Include="DataCore\" />
+    <Folder Include="Model\" />
+    <Folder Include="_DemoData\" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">

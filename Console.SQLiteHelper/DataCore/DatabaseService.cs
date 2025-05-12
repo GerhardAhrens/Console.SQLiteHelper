@@ -30,6 +30,18 @@ namespace Console.SQLiteHelper
             this.SqlConnectionString = this.ConnectStringToText(this.FullName);
         }
 
+        ~DatabaseService()
+        {
+            if (this.Connection != null)
+            {
+                this.FullName = null;
+                this.Database = null;
+                this.SqlConnectionString = null;
+                this.IsOpen = false;
+                this.Connection = null;
+            }
+        }
+
         public string FullName { get; private set; }
 
         public string Database { get; private set; }
@@ -37,6 +49,8 @@ namespace Console.SQLiteHelper
         public string SqlConnectionString { get; private set; }
 
         public bool IsOpen { get; private set; }
+
+        public SQLiteConnection Connection { get; private set; }
 
 
         public void Create()
@@ -96,7 +110,82 @@ namespace Console.SQLiteHelper
             }
         }
 
-        public bool Delete()
+        public SQLiteConnection OpenConnection()
+        {
+            try
+            {
+                if (File.Exists(this.FullName) == true)
+                {
+                    SQLiteConnection sqliteConnection = new SQLiteConnection(this.SqlConnectionString);
+                        if (sqliteConnection.State != ConnectionState.Open)
+                    {
+                        sqliteConnection.Open();
+                        this.Connection = sqliteConnection;
+                        this.IsOpen = true;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return this.Connection;
+        }
+
+        public void CloseConnection()
+        {
+            try
+            {
+                if (File.Exists(this.FullName) == true)
+                {
+                    if (this.Connection.State == ConnectionState.Open)
+                    {
+                        this.Connection.Close();
+                        this.FullName = null;
+                        this.Database = null;
+                        this.SqlConnectionString = null;
+                        this.IsOpen = false;
+                        this.Connection = null;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public void Insert(Action<SQLiteConnection> actionMethod)
+        {
+            try
+            {
+                if (File.Exists(this.FullName) == true)
+                {
+                    using (SQLiteConnection sqliteConnection = new SQLiteConnection(this.SqlConnectionString))
+                    {
+                        if (sqliteConnection.State != ConnectionState.Open)
+                        {
+                            sqliteConnection.Open();
+                            this.IsOpen = true;
+                        }
+
+                        if (actionMethod != null)
+                        {
+                            actionMethod?.Invoke(sqliteConnection);
+                        }
+
+                        sqliteConnection.Close();
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public bool DeleteDatabaseFile()
         {
             try
             {
@@ -427,7 +516,11 @@ namespace Console.SQLiteHelper
             {
                 if (classDisposing == true)
                 {
+                    this.FullName = null;
+                    this.Database = null;
+                    this.SqlConnectionString = null;
                     this.IsOpen = false;
+                    this.Connection = null;
                 }
             }
 

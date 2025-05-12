@@ -73,7 +73,10 @@ namespace Console.SQLiteHelper
         /// <exception cref="ArgumentNullException"></exception>
         public RecordSet(SQLiteConnection connection)
         {
-            if (connection == null) throw new ArgumentNullException("Das Connection-Objekt darf nicht 'null' sein");
+            if (connection == null)
+            {
+                throw new ArgumentNullException("Das Connection-Objekt darf nicht 'null' sein");
+            }
 
             try
             {

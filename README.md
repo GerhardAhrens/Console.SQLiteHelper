@@ -35,12 +35,31 @@ result = new RecordSet<int>(<ConnectionObject>, sql, RecordSetResult.Scalar).Get
 ```
 Vereinfachtes Schreiben eines einzelnen Wertes
 ```csharp
-int result = 0;
+SQLiteConnection connection = null;
+using (DatabaseService ds = new DatabaseService(databasePath))
+{
+    connection = ds.OpenConnection();
 
-string sqlText = $"UPDATE {TABLENAME} SET STATUS_ID = 100  WHERE ID = 1";
-result = new RecordSet<int>(this.Connection, sqlText, RecordSetResult.Scalar).Set().Result;
+    string sql = "UPDATE TAB_Contact SET Age = 65 WHERE Id = 'c8487801-19d4-41f9-901a-a56768d68e9b'";
+    int countUpdate = new RecordSet<int>(connection, sql, RecordSetResult.Scalar).Set().Result;
+
+    ds.CloseConnection();
+}
 ```
 
+Löschen eines Eintrages
+```csharp
+SQLiteConnection connection = null;
+using (DatabaseService ds = new DatabaseService(databasePath))
+{
+    connection = ds.OpenConnection();
+
+    string sql = "DELETE TAB_Contact WHERE Id = 'c8487801-19d4-41f9-901a-a56768d68e9b'";
+    int countDelete = new RecordSet<int>(connection, sql, RecordSetResult.Scalar).Set().Result;
+
+    ds.CloseConnection();
+}
+```
 
 Mögliche Rückgabetypen (bei Get())
 

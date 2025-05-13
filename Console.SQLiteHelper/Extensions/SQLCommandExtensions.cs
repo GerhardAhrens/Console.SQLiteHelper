@@ -1,12 +1,12 @@
 //-----------------------------------------------------------------------
 // <copyright file="SQLCommandExtensions.cs" company="Lifeprojects.de">
 //     Class: SQLCommandExtensions
-//     Copyright © PTA GmbH 2016
+//     Copyright © Lifeprojects.de 2025
 // </copyright>
 //
 // <author>Gerhard Ahrens - Lifeprojects.de</author>
 // <email>developer@lifeprojects.de</email>
-// <date>2.7.2018</date>
+// <date>22.04.2025</date>
 //
 // <summary>SQLCommandExtensions Class for SQL Server Database</summary>
 //-----------------------------------------------------------------------

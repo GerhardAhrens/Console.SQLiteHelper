@@ -1,12 +1,12 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="SQLDataReaderExtentions.cs" company="Lifeprojects.de">
 //     Class: SQLDataReaderExtentions
-//     Copyright © PTA GmbH 2018
+//     Copyright © Lifeprojects.de 2025
 // </copyright>
 //
 // <author>Gerhard Ahrens - Lifeprojects.de</author>
 // <email>developer@lifeprojects.de</email>
-// <date>2.7.2018</date>
+// <date>22.04.2025</date>
 //
 // <summary>SQLDataReaderExtentions Class for SQL Server Database</summary>
 //-----------------------------------------------------------------------

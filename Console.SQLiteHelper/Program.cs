@@ -37,6 +37,7 @@ namespace Console.SQLiteHelper
                 Console.WriteLine("3. Metadata Information");
                 Console.WriteLine("4. Insert one Row");
                 Console.WriteLine("5. Select by DataTable");
+                Console.WriteLine("6. Update by Scalare");
                 Console.WriteLine("X. Beenden");
 
                 Console.WriteLine("Wählen Sie einen Menüpunkt oder 'x' für beenden");
@@ -66,6 +67,10 @@ namespace Console.SQLiteHelper
                     else if (key == ConsoleKey.D5)
                     {
                         MenuPoint5();
+                    }
+                    else if (key == ConsoleKey.D6)
+                    {
+                        MenuPoint6();
                     }
                 }
             }
@@ -187,6 +192,56 @@ namespace Console.SQLiteHelper
 
                 sql = "SELECT \r\nId, Name, Birthday, Age \r\nFROM TAB_Contact\r\nLIMIT 2";
                 DataTable dtSeletLimit = new RecordSet<DataTable>(connection, sql, RecordSetResult.DataTable).Get().Result;
+
+                ds.CloseConnection();
+            }
+
+            Console.WriteLine("Eine Taste drücken für zurück zum Menü!");
+            Console.ReadKey();
+        }
+
+        private static void MenuPoint6()
+        {
+            Console.Clear();
+            if (File.Exists(databasePath) == false)
+            {
+                Console.WriteLine($"Datenbank '{databasePath}' wurde noch nicht erstellt!!");
+                Console.ReadKey();
+                return;
+            }
+
+            SQLiteConnection connection = null;
+            using (DatabaseService ds = new DatabaseService(databasePath))
+            {
+                connection = ds.OpenConnection();
+
+                string sql = "UPDATE TAB_Contact SET Age = 65 WHERE Id = 'c8487801-19d4-41f9-901a-a56768d68e9b'";
+                int countUpdate = new RecordSet<int>(connection, sql, RecordSetResult.Scalar).Set().Result;
+
+                ds.CloseConnection();
+            }
+
+            Console.WriteLine("Eine Taste drücken für zurück zum Menü!");
+            Console.ReadKey();
+        }
+
+        private static void MenuPoint7()
+        {
+            Console.Clear();
+            if (File.Exists(databasePath) == false)
+            {
+                Console.WriteLine($"Datenbank '{databasePath}' wurde noch nicht erstellt!!");
+                Console.ReadKey();
+                return;
+            }
+
+            SQLiteConnection connection = null;
+            using (DatabaseService ds = new DatabaseService(databasePath))
+            {
+                connection = ds.OpenConnection();
+
+                string sql = "DELETE TAB_Contact WHERE Id = 'c8487801-19d4-41f9-901a-a56768d68e9b'";
+                int countUpdate = new RecordSet<int>(connection, sql, RecordSetResult.Scalar).Set().Result;
 
                 ds.CloseConnection();
             }

@@ -10,28 +10,13 @@ In diesem Repository sammle ich Klassen und Funktionen rund um die [SQLite Core 
 # RecordSet
 
 Diese Klasse soll die Rückgabe von Datenbankergebnisse vereinfachen. Dazu kann ein Datentyp gewählt werden, in dem ich die Daten aus einer SQL Anweisung zurück bekommen will.
-Mit Get() können Daten gelesen und mit Set() kann ein einzelner Wert auf die Datenbank geschrieben werden.
-```csharp
-int result = 0;
-
-using (ConnectionRepository repository = new ConnectionRepository())
-{
-    string sql = "select last_number from user_sequences where sequence_NAME = 'MAIN'";
-    using (RecordSet<int> recordSet = new RecordSet<int>())
-    {
-        recordSet.Connection = <ConnectionObject>;
-        recordSet.SQL = sql;
-        recordSet.ResultTyp = RecordSetResult.Scalar;
-        result = recordSet.Get().Result;
-    }
- }
-```
-oder in verkürzter schreibweise
+Mit Get() können Daten gelesen und mit Execute() können Wert auf die Datenbank geschrieben oder gelöscht werden.
+Die Klasse RecordSet ist als Extension für den Type **SQLiteConnection** programmiert.
 ```csharp
 int result = 0;
 
 string sql = "select last_number from user_sequences where sequence_NAME = 'MAIN'";
-result = new RecordSet<int>(<ConnectionObject>, sql, RecordSetResult.Scalar).Get().Result;
+result = ConnectionObject.RecordSet<int>(sql).Get().Result;
 ```
 Vereinfachtes Schreiben eines einzelnen Wertes
 ```csharp
@@ -41,7 +26,7 @@ using (DatabaseService ds = new DatabaseService(databasePath))
     connection = ds.OpenConnection();
 
     string sql = "UPDATE TAB_Contact SET Age = 65 WHERE Id = 'c8487801-19d4-41f9-901a-a56768d68e9b'";
-    int countUpdate = new RecordSet<int>(connection, sql, RecordSetResult.Scalar).Set().Result;
+    int countUpdate = ConnectionObject RecordSet<int>(sql).Execute().Result;
 
     ds.CloseConnection();
 }
@@ -55,11 +40,24 @@ using (DatabaseService ds = new DatabaseService(databasePath))
     connection = ds.OpenConnection();
 
     string sql = "DELETE TAB_Contact WHERE Id = 'c8487801-19d4-41f9-901a-a56768d68e9b'";
-    int countDelete = new RecordSet<int>(connection, sql, RecordSetResult.Scalar).Set().Result;
+    int countDelete = ConnectionObject.RecordSet<int>(sql).Execute().Result;
 
     ds.CloseConnection();
 }
 ```
+Neues DataRow erstellen
+```csharp
+SQLiteConnection connection = null;
+using (DatabaseService ds = new DatabaseService(databasePath))
+{
+    connection = ds.OpenConnection();
+
+    DataRow newRow = connection.RecordSet<DataRow>("TAB_Contact").New().Result;
+
+    ds.CloseConnection();
+}
+```
+
 
 Mögliche Rückgabetypen (bei Get())
 
@@ -68,13 +66,15 @@ Mögliche Rückgabetypen (bei Get())
 | DataRow         |
 | DataTable       |
 | ICollectionView |
+| List\<T> |
+| Dictionary\<,> |
 | string |
 | DateTime |
 | bool |
 | int,long |
 | decimal,double, float, Single|
 
-Mögliche Übergabetypen (bei Set())
+Mögliche Übergabetypen (bei Set() oder Execute())
 
 | Typ  |
 |:----------------|
@@ -84,8 +84,6 @@ Mögliche Übergabetypen (bei Set())
 | string|
 
 # Extension
-## SQLCommandExtensions
+## SQLRecordSetExtension
 
-## SQLDataReaderExtentions
-
-## SQLParametersExtension
+## DataTableExtensions

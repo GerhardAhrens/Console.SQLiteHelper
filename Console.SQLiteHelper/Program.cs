@@ -38,6 +38,8 @@ namespace Console.SQLiteHelper
                 Console.WriteLine("4. Insert one Row");
                 Console.WriteLine("5. Select by DataTable");
                 Console.WriteLine("6. Update by Scalare");
+                Console.WriteLine("7. Löschen eines Eintrages");
+                Console.WriteLine("8. Neues DataRow erstellen");
                 Console.WriteLine("X. Beenden");
 
                 Console.WriteLine("Wählen Sie einen Menüpunkt oder 'x' für beenden");
@@ -71,6 +73,14 @@ namespace Console.SQLiteHelper
                     else if (key == ConsoleKey.D6)
                     {
                         MenuPoint6();
+                    }
+                    else if (key == ConsoleKey.D7)
+                    {
+                        MenuPoint7();
+                    }
+                    else if (key == ConsoleKey.D8)
+                    {
+                        MenuPoint8();
                     }
                 }
             }
@@ -185,13 +195,13 @@ namespace Console.SQLiteHelper
             {
                 connection = ds.OpenConnection();
                 string sql = "SELECT \r\nId, Name, Birthday, Age \r\nFROM TAB_Contact";
-                DataTable dtSelect = new RecordSet<DataTable>(connection, sql, RecordSetResult.DataTable).Get().Result;
+                DataTable dtSelect = connection.RecordSet<DataTable>(sql).Get().Result;
 
                 sql = "SELECT \r\nId, Name, Birthday, Age \r\nFROM TAB_Contact \r\nWHERE (Age = '64') \r\nAND (Name = 'Gerhard')";
-                DataTable dtSeletWhere = new RecordSet<DataTable>(connection, sql, RecordSetResult.DataTable).Get().Result;
+                DataTable dtSeletWhere = connection.RecordSet<DataTable>(sql).Get().Result;
 
                 sql = "SELECT \r\nId, Name, Birthday, Age \r\nFROM TAB_Contact\r\nLIMIT 2";
-                DataTable dtSeletLimit = new RecordSet<DataTable>(connection, sql, RecordSetResult.DataTable).Get().Result;
+                DataTable dtSeletLimit = connection.RecordSet<DataTable>(sql).Get().Result;
 
                 ds.CloseConnection();
             }
@@ -216,7 +226,7 @@ namespace Console.SQLiteHelper
                 connection = ds.OpenConnection();
 
                 string sql = "UPDATE TAB_Contact SET Age = 65 WHERE Id = 'c8487801-19d4-41f9-901a-a56768d68e9b'";
-                int countUpdate = new RecordSet<int>(connection, sql, RecordSetResult.Scalar).Set().Result;
+                int countUpdate = connection.RecordSet<int>(sql).Set().Result;
 
                 ds.CloseConnection();
             }
@@ -241,7 +251,31 @@ namespace Console.SQLiteHelper
                 connection = ds.OpenConnection();
 
                 string sql = "DELETE TAB_Contact WHERE Id = 'c8487801-19d4-41f9-901a-a56768d68e9b'";
-                int countUpdate = new RecordSet<int>(connection, sql, RecordSetResult.Scalar).Set().Result;
+                int countUpdate = connection.RecordSet<int>(sql).Set().Result;
+
+                ds.CloseConnection();
+            }
+
+            Console.WriteLine("Eine Taste drücken für zurück zum Menü!");
+            Console.ReadKey();
+        }
+
+        private static void MenuPoint8()
+        {
+            Console.Clear();
+            if (File.Exists(databasePath) == false)
+            {
+                Console.WriteLine($"Datenbank '{databasePath}' wurde noch nicht erstellt!!");
+                Console.ReadKey();
+                return;
+            }
+
+            SQLiteConnection connection = null;
+            using (DatabaseService ds = new DatabaseService(databasePath))
+            {
+                connection = ds.OpenConnection();
+
+                DataRow newRow = connection.RecordSet<DataRow>("TAB_Contact").New().Result;
 
                 ds.CloseConnection();
             }
@@ -253,19 +287,19 @@ namespace Console.SQLiteHelper
         private static void InsertNewRow(SQLiteConnection sqliteConnection)
         {
             string sqlText = "INSERT INTO TAB_Contact (Id, Name, Birthday, Age) \r\nVALUES\r\n ('c8487801-19d4-41f9-901a-a56768d68e9b', 'Gerhard', '1960-06-28 00:00:00', '64')";
-            sqliteConnection.CmdExecuteNonQuery(sqlText);
+            sqliteConnection.RecordSet<int>(sqlText).Execute();
 
             sqlText = "INSERT INTO TAB_Contact (Id, Name, Birthday, Age) \r\nVALUES\r\n ('1f338a36-1730-41f6-94f9-15a5b105670f', 'Charlie', '1923-02-12 00:00:00', '2')";
-            sqliteConnection.CmdExecuteNonQuery(sqlText);
+            sqliteConnection.RecordSet<int>(sqlText).Execute();
 
             sqlText = "INSERT INTO TAB_Contact (Id, Name, Birthday, Age) \r\nVALUES\r\n ('5A202874-A649-4086-8BF3-AA8FEFD56F8A', 'Donald Duck', '1934-06-09 00:00:00', '91')";
-            sqliteConnection.CmdExecuteNonQuery(sqlText);
+            sqliteConnection.RecordSet<int>(sqlText).Execute();
         }
 
         private static void CreateTableInDB(SQLiteConnection sqliteConnection)
         {
             string sqlText = "CREATE TABLE IF NOT EXISTS TAB_Contact \r\n(\r\nId VARCHAR(36),\r\nName VARCHAR(50),\r\nAge Integer,\r\nBirthday DateTime\r\n, PRIMARY KEY \r\n(\r\nId\r\n))";
-            sqliteConnection.CmdExecuteNonQuery(sqlText);
+            sqliteConnection.RecordSet<int>(sqlText).Execute();
         }
     }
 }

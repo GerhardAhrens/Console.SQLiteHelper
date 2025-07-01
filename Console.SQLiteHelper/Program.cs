@@ -16,6 +16,7 @@
 namespace Console.SQLiteHelper
 {
     using System;
+    using System.ComponentModel;
     using System.Data;
     using System.Data.SQLite;
     using System.IO;
@@ -199,6 +200,12 @@ namespace Console.SQLiteHelper
 
                 sql = "SELECT \r\nId, Name, Birthday, Age \r\nFROM TAB_Contact \r\nWHERE (Age = '64') \r\nAND (Name = 'Gerhard')";
                 DataTable dtSeletWhere = connection.RecordSet<DataTable>(sql).Get().Result;
+
+                sql = "SELECT \r\nId, Name, Birthday, Age \r\nFROM TAB_Contact \r\nWHERE (Age = '65') \r\nAND (Name = 'Gerhard')";
+                DataTable dtSeletWhereFalse = connection.RecordSet<DataTable>(sql).Get().Result;
+
+                sql = "SELECT \r\nId, Name, Birthday, Age \r\nFROM TAB_Contact \r\nWHERE (Age = '65') \r\nAND (Name = 'Gerhard')";
+                ICollectionView dtSeletWhereICollectionView = connection.RecordSet<ICollectionView>(sql).Get().Result;
 
                 sql = "SELECT \r\nId, Name, Birthday, Age \r\nFROM TAB_Contact\r\nLIMIT 2";
                 DataTable dtSeletLimit = connection.RecordSet<DataTable>(sql).Get().Result;

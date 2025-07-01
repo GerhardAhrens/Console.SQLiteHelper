@@ -201,14 +201,18 @@ namespace Console.SQLiteHelper
                 sql = "SELECT \r\nId, Name, Birthday, Age \r\nFROM TAB_Contact \r\nWHERE (Age = '64') \r\nAND (Name = 'Gerhard')";
                 DataTable dtSeletWhere = connection.RecordSet<DataTable>(sql).Get().Result;
 
+                sql = "SELECT \r\nId, Name, Birthday, Age \r\nFROM TAB_Contact\r\nLIMIT 2";
+                DataTable dtSeletLimit = connection.RecordSet<DataTable>(sql).Get().Result;
+
+                /* Beispiel wenn keine Daten gefunden werden */
                 sql = "SELECT \r\nId, Name, Birthday, Age \r\nFROM TAB_Contact \r\nWHERE (Age = '65') \r\nAND (Name = 'Gerhard')";
                 DataTable dtSeletWhereFalse = connection.RecordSet<DataTable>(sql).Get().Result;
 
                 sql = "SELECT \r\nId, Name, Birthday, Age \r\nFROM TAB_Contact \r\nWHERE (Age = '65') \r\nAND (Name = 'Gerhard')";
                 ICollectionView dtSeletWhereICollectionView = connection.RecordSet<ICollectionView>(sql).Get().Result;
 
-                sql = "SELECT \r\nId, Name, Birthday, Age \r\nFROM TAB_Contact\r\nLIMIT 2";
-                DataTable dtSeletLimit = connection.RecordSet<DataTable>(sql).Get().Result;
+                sql = "SELECT Max(Age) FROM TAB_Contact WHERE (Age = '65') AND (Name = 'Gerhard')";
+                int dtSeletWhereMax = connection.RecordSet<int>(sql).Get().Result;
 
                 ds.CloseConnection();
             }

@@ -220,9 +220,15 @@ namespace System.Data.SQLite
                     }
 
                     var result = cmd.ExecuteScalar();
-                    getAs = result == null ? default(T) : (T)Convert.ChangeType(result, typeof(T));
+                    if (result != DBNull.Value)
+                    {
+                        getAs = result == null ? default(T) : (T)Convert.ChangeType(result, typeof(T));
+                    }
+                    else
+                    {
+                        getAs = (T)Convert.ChangeType(0, typeof(T));
+                    }
                 }
-
             }
             catch (SQLiteException ex)
             {

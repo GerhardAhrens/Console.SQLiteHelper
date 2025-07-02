@@ -24,16 +24,39 @@ namespace System.Data.SQLite
 
     public static class SQLRecordSetExtension
     {
+        /// <summary>
+        /// Führt eine SQL Anweisung für eine offen Datenbank-Connection aus.
+        /// </summary>
+        /// <typeparam name="T">Erwarteter Datentyp</typeparam>
+        /// <param name="this">Connection Objekt der Datenbankverbindung</param>
+        /// <param name="sql">SQL Anweisung</param>
+        /// <returns>Erwarteterer Wert der SQL Anweisung, werden keine Daten gefunden, wird entweder null oder der Default-Wert des Datentyp zurückgegeben.</returns>
         public static RecordSetResult<T> RecordSet<T>(this SQLiteConnection @this, string sql)
         {
             return new RecordSetResult<T>(@this,default, sql);
         }
 
+        /// <summary>
+        /// Führt eine SQL Anweisung für eine offen Datenbank-Connection aus.
+        /// </summary>
+        /// <typeparam name="T">Erwarteter Datentyp</typeparam>
+        /// <param name="this">Connection Objekt der Datenbankverbindung</param>
+        /// <param name="sql">SQL Anweisung</param>
+        /// <param name="parameterCollection">Dictionary mit einer Liste von Parametern als String (Parametername) und Object (Parametervalue)</param>
+        /// <returns>Erwarteterer Wert der SQL Anweisung, werden keine Daten gefunden, wird entweder null oder der Default-Wert des Datentyp zurückgegeben.</returns>
         public static RecordSetResult<T> RecordSet<T>(this SQLiteConnection @this, string sql, Dictionary<string, object> parameterCollection)
         {
             return new RecordSetResult<T>(@this, default, sql, parameterCollection);
         }
 
+        /// <summary>
+        /// Führt eine SQL Anweisung für eine offen Datenbank-Connection aus.
+        /// </summary>
+        /// <typeparam name="T">Erwarteter Datentyp</typeparam>
+        /// <param name="this">Connection Objekt der Datenbankverbindung</param>
+        /// <param name="sql">SQL Anweisung</param>
+        /// <param name="parameterCollection">SQLiteParameter Array mit einer Liste von Parametern als String (Parametername) und Object (Parametervalue)</param>
+        /// <returns>Erwarteterer Wert der SQL Anweisung, werden keine Daten gefunden, wird entweder null oder der Default-Wert des Datentyp zurückgegeben.</returns>
         public static RecordSetResult<T> RecordSet<T>(this SQLiteConnection @this, string sql, SQLiteParameter[] parameterCollection)
         {
             return new RecordSetResult<T>(@this, default, sql, parameterCollection);
@@ -1158,6 +1181,12 @@ namespace System.Data.SQLite
 
     public class RecordSetResult<T>
     {
+        /// <summary>
+        /// Gibt das Ergebnis eines RecordSet zurück
+        /// </summary>
+        /// <param name="connection">Aktuelles Datenbankverbindung, als Connection-Object</param>
+        /// <param name="resultValue">Erwarteterer Wert der SQL Anweisung, werden keine Daten gefunden, wird entweder null oder der Default-Wert des Datentyp zurückgegeben.</param>
+        /// <param name="sql">SQL Anweisung</param>
         public RecordSetResult(SQLiteConnection connection, T resultValue, string sql)
         {
             this.Connection = connection;
@@ -1165,6 +1194,13 @@ namespace System.Data.SQLite
             this.Result = resultValue;
         }
 
+        /// <summary>
+        /// Gibt das Ergebnis eines RecordSet zurück
+        /// </summary>
+        /// <param name="connection">Aktuelles Datenbankverbindung, als Connection-Object</param>
+        /// <param name="resultValue">Erwarteterer Wert der SQL Anweisung, werden keine Daten gefunden, wird entweder null oder der Default-Wert des Datentyp zurückgegeben.</param>
+        /// <param name="sql">SQL Anweisung</param>
+        /// <param name="parameterCollection">Dictionary mit einer Liste von Parametern als String (Parametername) und Object (Parametervalue)</param>
         public RecordSetResult(SQLiteConnection connection, T resultValue, string sql, Dictionary<string, object> parameterCollection)
         {
             this.Connection = connection;
@@ -1173,6 +1209,13 @@ namespace System.Data.SQLite
             this.ParameterCollection = parameterCollection;
         }
 
+        /// <summary>
+        /// Gibt das Ergebnis eines RecordSet zurück
+        /// </summary>
+        /// <param name="connection">Aktuelles Datenbankverbindung, als Connection-Object</param>
+        /// <param name="resultValue">Erwarteterer Wert der SQL Anweisung, werden keine Daten gefunden, wird entweder null oder der Default-Wert des Datentyp zurückgegeben.</param>
+        /// <param name="sql">SQL Anweisung</param>
+        /// <param name="parameterCollection">SQLiteParameter Array mit einer Liste von Parametern als String (Parametername) und Object (Parametervalue)</param>
         public RecordSetResult(SQLiteConnection connection, T resultValue, string sql, SQLiteParameter[] parameterCollection)
         {
             this.Connection = connection;
@@ -1181,14 +1224,29 @@ namespace System.Data.SQLite
             this.SQLiteParameter = parameterCollection;
         }
 
+        /// <summary>
+        /// SQL Anweisung
+        /// </summary>
         public string SQL { get; private set; }
 
+        /// <summary>
+        /// Dictionary mit einer Liste von Parametern als String (Parametername) und Object (Parametervalue)
+        /// </summary>
         public Dictionary<string, object> ParameterCollection { get; private set; }
 
+        /// <summary>
+        /// SQLiteParameter Array mit einer Liste von Parametern als String (Parametername) und Object (Parametervalue)
+        /// </summary>
         public SQLiteParameter[] SQLiteParameter { get; private set; }
 
+        /// <summary>
+        /// Aktuelles Datenbankverbindung, als Connection-Object
+        /// </summary>
         public SQLiteConnection Connection { get; set; }
 
+        /// <summary>
+        /// Erwarteterer Wert der SQL Anweisung, werden keine Daten gefunden, wird entweder null oder der Default-Wert des Datentyp zurückgegeben.
+        /// </summary>
         public T Result { get; private set; }
     }
 }

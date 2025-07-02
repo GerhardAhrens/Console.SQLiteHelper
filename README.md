@@ -11,13 +11,45 @@ In diesem Repository sammle ich Klassen und Funktionen rund um die [SQLite Core 
 
 Diese Klasse soll die Rückgabe von Datenbankergebnisse vereinfachen. Dazu kann ein Datentyp gewählt werden, in dem ich die Daten aus einer SQL Anweisung zurück bekommen will.
 Mit Get() können Daten gelesen und mit Execute() können Wert auf die Datenbank geschrieben oder gelöscht werden.
-Die Klasse RecordSet ist als Extension für den Type **SQLiteConnection** programmiert.
-```csharp
-int result = 0;
+Die Klasse RecordSet ist als Extension für den Type **SQLiteConnection** programmiert.</br>
+Es muß immer ein offenen Connection-Objekt vorhanden sein.
 
+Lesen von Daten aus einer Tabelle
+```csharp
 string sql = "select last_number from user_sequences where sequence_NAME = 'MAIN'";
-result = ConnectionObject.RecordSet<int>(sql).Get().Result;
+int result = connectionObject.RecordSet<int>(sql).Get().Result;
 ```
+
+Rückgabe eines DataTable
+```csharp
+string sql = "SELECT Id, Name, Birthday, Age FROM TAB_Contact";
+DataTable result = connectionObject.RecordSet<DataTable>(sql).Get().Result;
+```
+
+Rückgabe eines DataTable mit Parameter als Dictionary<string,object>()
+```csharp
+SQLiteConnection connection = null;
+using (DatabaseService ds = new DatabaseService(databasePath))
+{
+    connection = ds.OpenConnection();
+
+    Dictionary<string,object> paramCollection = new Dictionary<string,object>();
+    paramCollection.Add(":Age", 64);
+    paramCollection.Add(":Name", "Gerhard");
+
+    string sql = "SELECT \r\nId, Name, Birthday, Age \r\nFROM TAB_Contact \r\nWHERE (Age = :Age) \r\nAND (Name = :Name)";
+    DataTable result = connection.RecordSet<DataTable>(sql, paramCollection).Get().Result;
+
+    ds.CloseConnection();
+}
+```
+
+Rückgabe eines DataRow (für einen einzelnen Record, LIMIT 1)
+```csharp
+string sql = "SELECT Id, Name, Birthday, Age FROM TAB_Contact LIMIT 1";
+DataRow result = connectionObject.RecordSet<DataRow>(sql).Get().Result;
+```
+
 Vereinfachtes Schreiben eines einzelnen Wertes
 ```csharp
 SQLiteConnection connection = null;

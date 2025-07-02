@@ -42,6 +42,8 @@ namespace Console.SQLiteHelper
                 Console.WriteLine("7. Update by Scalare");
                 Console.WriteLine("8. Löschen eines Eintrages");
                 Console.WriteLine("9. Neues DataRow erstellen");
+                Console.WriteLine("A. Seletct mit Dictionary<string,object> Parameter");
+                Console.WriteLine("B. Seletct mit SQLiteParameter");
                 Console.WriteLine("X. Beenden");
 
                 Console.WriteLine("Wählen Sie einen Menüpunkt oder 'x' für beenden");
@@ -87,6 +89,14 @@ namespace Console.SQLiteHelper
                     else if (key == ConsoleKey.D9)
                     {
                         MenuPoint9();
+                    }
+                    else if (key == ConsoleKey.A)
+                    {
+                        MenuPointA();
+                    }
+                    else if (key == ConsoleKey.B)
+                    {
+                        MenuPointB();
                     }
                 }
             }
@@ -200,7 +210,7 @@ namespace Console.SQLiteHelper
             using (DatabaseService ds = new DatabaseService(databasePath))
             {
                 connection = ds.OpenConnection();
-                string sql = "SELECT \r\nId, Name, Birthday, Age \r\nFROM TAB_Contact";
+                string sql = "SELECT Id, Name, Birthday, Age FROM TAB_Contact";
                 DataTable dtSelect = connection.RecordSet<DataTable>(sql).Get().Result;
 
                 sql = "SELECT \r\nId, Name, Birthday, Age \r\nFROM TAB_Contact \r\nWHERE (Age = '64') \r\nAND (Name = 'Gerhard')";
@@ -208,6 +218,9 @@ namespace Console.SQLiteHelper
 
                 sql = "SELECT \r\nId, Name, Birthday, Age \r\nFROM TAB_Contact\r\nLIMIT 2";
                 DataTable dtSeletLimit = connection.RecordSet<DataTable>(sql).Get().Result;
+
+                sql = "SELECT Id, Name, Birthday, Age FROM TAB_Contact LIMIT 1";
+                DataRow selectLimitDataRow = connection.RecordSet<DataRow>(sql).Get().Result;
 
                 ds.CloseConnection();
             }
@@ -237,7 +250,7 @@ namespace Console.SQLiteHelper
                 sqlStatement = "SELECT \r\nId, Name, Birthday, Age \r\nFROM TAB_Contact \r\nWHERE (Age = '65') \r\nAND (Name = 'Gerhard')";
                 DataTable selectWhereFalseDataTable = connection.RecordSet<DataTable>(sqlStatement).Get().Result;
 
-                sqlStatement = "SELECT \r\nId, Name, Birthday, Age \r\nFROM TAB_Contact \r\nWHERE (Age = '65') \r\nAND (Name = 'Gerhard')";
+                sqlStatement = "SELECT Id, Name, Birthday, Age FROM TAB_Contact WHERE (Age = '65') AND (Name = 'Gerhard') LIMIT 1";
                 DataRow SelectWhereFalseDataRow = connection.RecordSet<DataRow>(sqlStatement).Get().Result;
 
                 sqlStatement = "SELECT \r\nId, Name, Birthday, Age \r\nFROM TAB_Contact \r\nWHERE (Age = '65') \r\nAND (Name = 'Gerhard')";
@@ -327,6 +340,64 @@ namespace Console.SQLiteHelper
             Console.ReadKey();
         }
 
+        private static void MenuPointA()
+        {
+            Console.Clear();
+            if (File.Exists(databasePath) == false)
+            {
+                Console.WriteLine($"Datenbank '{databasePath}' wurde noch nicht erstellt!!");
+                Console.ReadKey();
+                return;
+            }
+
+            SQLiteConnection connection = null;
+            using (DatabaseService ds = new DatabaseService(databasePath))
+            {
+                connection = ds.OpenConnection();
+
+                Dictionary<string,object> paramCollection = new Dictionary<string,object>();
+                paramCollection.Add(":Age", 64);
+                paramCollection.Add(":Name", "Gerhard");
+
+                string sql = "SELECT \r\nId, Name, Birthday, Age \r\nFROM TAB_Contact \r\nWHERE (Age = :Age) \r\nAND (Name = :Name)";
+                DataTable result = connection.RecordSet<DataTable>(sql, paramCollection).Get().Result;
+
+                ds.CloseConnection();
+            }
+
+            Console.WriteLine("Eine Taste drücken für zurück zum Menü!");
+            Console.ReadKey();
+        }
+
+        private static void MenuPointB()
+        {
+            Console.Clear();
+            if (File.Exists(databasePath) == false)
+            {
+                Console.WriteLine($"Datenbank '{databasePath}' wurde noch nicht erstellt!!");
+                Console.ReadKey();
+                return;
+            }
+
+            SQLiteConnection connection = null;
+            using (DatabaseService ds = new DatabaseService(databasePath))
+            {
+                connection = ds.OpenConnection();
+
+                SQLiteParameter[] paramCollection = new SQLiteParameter[2];
+                paramCollection[0] = new SQLiteParameter(":Age", 64);
+                paramCollection[1] = new SQLiteParameter(":Name", "Gerhard");
+
+                string sql = "SELECT \r\nId, Name, Birthday, Age \r\nFROM TAB_Contact \r\nWHERE (Age = :Age) \r\nAND (Name = :Name)";
+                DataTable dtSelect = connection.RecordSet<DataTable>(sql, paramCollection).Get().Result;
+
+                ds.CloseConnection();
+            }
+
+            Console.WriteLine("Eine Taste drücken für zurück zum Menü!");
+            Console.ReadKey();
+        }
+
         private static void InsertNewRow(SQLiteConnection sqliteConnection)
         {
             string sqlText = "INSERT INTO TAB_Contact (Id, Name, Birthday, Age) \r\nVALUES\r\n ('c8487801-19d4-41f9-901a-a56768d68e9b', 'Gerhard', '1960-06-28 00:00:00', '64')";
@@ -341,7 +412,7 @@ namespace Console.SQLiteHelper
 
         private static void CreateTableInDB(SQLiteConnection sqliteConnection)
         {
-            string sqlText = "CREATE TABLE IF NOT EXISTS TAB_Contact \r\n(\r\nId VARCHAR(36),\r\nName VARCHAR(50),\r\nAge Integer,\r\nBirthday DateTime\r\n, PRIMARY KEY \r\n(\r\nId\r\n))";
+            string sqlText = "CREATE TABLE IF NOT EXISTS TAB_Contact (Id VARCHAR(36),nName VARCHAR(50),Age Integer,Birthday DateTime, PRIMARY KEY (Id))";
             sqliteConnection.RecordSet<int>(sqlText).Execute();
         }
     }

@@ -37,10 +37,11 @@ namespace Console.SQLiteHelper
                 Console.WriteLine("2. Database Info");
                 Console.WriteLine("3. Metadata Information");
                 Console.WriteLine("4. Insert one Row");
-                Console.WriteLine("5. Select by DataTable");
-                Console.WriteLine("6. Update by Scalare");
-                Console.WriteLine("7. Löschen eines Eintrages");
-                Console.WriteLine("8. Neues DataRow erstellen");
+                Console.WriteLine("5. Select mit verschiedenen Rückgabetypen");
+                Console.WriteLine("6. Select ohne konkretes Ergebnis");
+                Console.WriteLine("7. Update by Scalare");
+                Console.WriteLine("8. Löschen eines Eintrages");
+                Console.WriteLine("9. Neues DataRow erstellen");
                 Console.WriteLine("X. Beenden");
 
                 Console.WriteLine("Wählen Sie einen Menüpunkt oder 'x' für beenden");
@@ -82,6 +83,10 @@ namespace Console.SQLiteHelper
                     else if (key == ConsoleKey.D8)
                     {
                         MenuPoint8();
+                    }
+                    else if (key == ConsoleKey.D9)
+                    {
+                        MenuPoint9();
                     }
                 }
             }
@@ -204,16 +209,6 @@ namespace Console.SQLiteHelper
                 sql = "SELECT \r\nId, Name, Birthday, Age \r\nFROM TAB_Contact\r\nLIMIT 2";
                 DataTable dtSeletLimit = connection.RecordSet<DataTable>(sql).Get().Result;
 
-                /* Beispiel wenn keine Daten gefunden werden */
-                sql = "SELECT \r\nId, Name, Birthday, Age \r\nFROM TAB_Contact \r\nWHERE (Age = '65') \r\nAND (Name = 'Gerhard')";
-                DataTable dtSeletWhereFalse = connection.RecordSet<DataTable>(sql).Get().Result;
-
-                sql = "SELECT \r\nId, Name, Birthday, Age \r\nFROM TAB_Contact \r\nWHERE (Age = '65') \r\nAND (Name = 'Gerhard')";
-                ICollectionView dtSeletWhereICollectionView = connection.RecordSet<ICollectionView>(sql).Get().Result;
-
-                sql = "SELECT Max(Age) FROM TAB_Contact WHERE (Age = '65') AND (Name = 'Gerhard')";
-                int dtSeletWhereMax = connection.RecordSet<int>(sql).Get().Result;
-
                 ds.CloseConnection();
             }
 
@@ -222,6 +217,43 @@ namespace Console.SQLiteHelper
         }
 
         private static void MenuPoint6()
+        {
+            string sqlStatement = string.Empty;
+
+            Console.Clear();
+            if (File.Exists(databasePath) == false)
+            {
+                Console.WriteLine($"Datenbank '{databasePath}' wurde noch nicht erstellt!!");
+                Console.ReadKey();
+                return;
+            }
+
+            SQLiteConnection connection = null;
+            using (DatabaseService ds = new DatabaseService(databasePath))
+            {
+                connection = ds.OpenConnection();
+
+                /* Beispiel wenn keine Daten gefunden werden */
+                sqlStatement = "SELECT \r\nId, Name, Birthday, Age \r\nFROM TAB_Contact \r\nWHERE (Age = '65') \r\nAND (Name = 'Gerhard')";
+                DataTable selectWhereFalseDataTable = connection.RecordSet<DataTable>(sqlStatement).Get().Result;
+
+                sqlStatement = "SELECT \r\nId, Name, Birthday, Age \r\nFROM TAB_Contact \r\nWHERE (Age = '65') \r\nAND (Name = 'Gerhard')";
+                DataRow SelectWhereFalseDataRow = connection.RecordSet<DataRow>(sqlStatement).Get().Result;
+
+                sqlStatement = "SELECT \r\nId, Name, Birthday, Age \r\nFROM TAB_Contact \r\nWHERE (Age = '65') \r\nAND (Name = 'Gerhard')";
+                ICollectionView dtSeletWhereICollectionView = connection.RecordSet<ICollectionView>(sqlStatement).Get().Result;
+
+                sqlStatement = "SELECT Max(Age) FROM TAB_Contact WHERE (Age = '65') AND (Name = 'Gerhard')";
+                int dtSeletWhereMax = connection.RecordSet<int>(sqlStatement).Get().Result;
+
+                ds.CloseConnection();
+            }
+
+            Console.WriteLine("Eine Taste drücken für zurück zum Menü!");
+            Console.ReadKey();
+        }
+
+        private static void MenuPoint7()
         {
             Console.Clear();
             if (File.Exists(databasePath) == false)
@@ -246,7 +278,7 @@ namespace Console.SQLiteHelper
             Console.ReadKey();
         }
 
-        private static void MenuPoint7()
+        private static void MenuPoint8()
         {
             Console.Clear();
             if (File.Exists(databasePath) == false)
@@ -271,7 +303,7 @@ namespace Console.SQLiteHelper
             Console.ReadKey();
         }
 
-        private static void MenuPoint8()
+        private static void MenuPoint9()
         {
             Console.Clear();
             if (File.Exists(databasePath) == false)

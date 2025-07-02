@@ -42,6 +42,16 @@ namespace System.Data.SQLite
         #region SET, SQL Anweisungen (Update, Delete) ausführen
         public static RecordSetResult<T> Set<T>(this RecordSetResult<T> @this)
         {
+            if (@this.Connection == null)
+            {
+                throw new ArgumentException($"Das Connection-Object ist null. Daher kann das RecordSet nicht ausgeführt werden");
+            }
+
+            if (@this.Connection.State != ConnectionState.Open)
+            {
+                throw new ArgumentException($"Damit das RecordSet ausgeführt werden kann, muß die Connection offen sein.");
+            }
+
             if (CheckSetResultParameter(typeof(T)) == false)
             {
                 throw new ArgumentException($"Der Typ '{typeof(T).Name}' ist für das Schreiben des RecordSet nicht gültig.");
@@ -128,6 +138,16 @@ namespace System.Data.SQLite
         #region GET, Lesen von Daten in verschiedene Typen
         public static RecordSetResult<T> Get<T>(this RecordSetResult<T> @this)
         {
+            if (@this.Connection == null)
+            {
+                throw new ArgumentException($"Das Connection-Object ist null. Daher kann das RecordSet nicht ausgeführt werden");
+            }
+
+            if (@this.Connection.State != ConnectionState.Open)
+            {
+                throw new ArgumentException($"Damit das RecordSet ausgeführt werden kann, muß die Connection offen sein.");
+            }
+
             if (CheckGetResultParameter(typeof(T)) == false)
             {
                 throw new ArgumentException($"Der Typ '{typeof(T).Name}' ist für die Rückgabe des RecordSet Result nicht gültig.");
@@ -808,6 +828,16 @@ namespace System.Data.SQLite
         #region Neues DataRow
         public static RecordSetResult<T> New<T>(this RecordSetResult<T> @this)
         {
+            if (@this.Connection == null)
+            {
+                throw new ArgumentException($"Das Connection-Object ist null. Daher kann das RecordSet nicht ausgeführt werden");
+            }
+
+            if (@this.Connection.State != ConnectionState.Open)
+            {
+                throw new ArgumentException($"Damit das RecordSet ausgeführt werden kann, muß die Connection offen sein.");
+            }
+
             if (CheckNewResultParameter(typeof(T)) == false)
             {
                 throw new ArgumentException($"Der Typ '{typeof(T).Name}' ist für das Erstellen eines Typ über das RecordSet nicht gültig.");
@@ -874,6 +904,16 @@ namespace System.Data.SQLite
         #region Execute SQL Anweisung
         public static RecordSetResult<T> Execute<T>(this RecordSetResult<T> @this)
         {
+            if (@this.Connection == null)
+            {
+                throw new ArgumentException($"Das Connection-Object ist null. Daher kann das RecordSet nicht ausgeführt werden");
+            }
+
+            if (@this.Connection.State != ConnectionState.Open)
+            {
+                throw new ArgumentException($"Damit das RecordSet ausgeführt werden kann, muß die Connection offen sein.");
+            }
+
             if (CheckExecuteResultParameter(typeof(T)) == false)
             {
                 throw new ArgumentException($"Der Typ '{typeof(T).Name}' ist für eine Execute Anweisung nicht gültig. Versuchen Sie es mit int, long.");

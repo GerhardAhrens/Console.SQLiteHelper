@@ -86,7 +86,7 @@ namespace System.Data.SQLite
             {
                 if (typeof(T).IsGenericType == false && typeof(T).IsPrimitive == true && typeof(T).Namespace == "System")
                 {
-                    resultValue = SetExecuteNonQuery<T>(@this.Connection, @this.SQL,@this.ParameterCollection);
+                    resultValue = SetExecuteNonQuery<T>(@this.Connection, @this.SQL,@this.ParameterCollection, @this.SQLiteParameter);
                 }
             }
             catch (Exception ex)
@@ -98,7 +98,7 @@ namespace System.Data.SQLite
             return new RecordSetResult<T>(@this.Connection, resultValue, @this.SQL);
         }
 
-        private static T SetExecuteNonQuery<T>(SQLiteConnection connection, string sql, Dictionary<string, object> parameterCollection)
+        private static T SetExecuteNonQuery<T>(SQLiteConnection connection, string sql, Dictionary<string, object> parameterCollection, SQLiteParameter[] sqliteParameter)
         {
             object getAs = null;
 
@@ -182,35 +182,35 @@ namespace System.Data.SQLite
             {
                 if (typeof(T).IsGenericType == false && typeof(T).IsPrimitive == true && typeof(T).Namespace == "System")
                 {
-                    resultValue = GetScalar<T>(@this.Connection, @this.SQL, @this.ParameterCollection);
+                    resultValue = GetScalar<T>(@this.Connection, @this.SQL, @this.ParameterCollection, @this.SQLiteParameter);
                 }
                 else if (typeof(T) == typeof(byte[]) && typeof(T).IsGenericType == false && typeof(T).Namespace == "System")
                 {
-                    resultValue = GetScalar<T>(@this.Connection, @this.SQL, @this.ParameterCollection);
+                    resultValue = GetScalar<T>(@this.Connection, @this.SQL, @this.ParameterCollection, @this.SQLiteParameter);
                 }
                 else if (typeof(T) == typeof(DataRow))
                 {
-                    resultValue = GetDataRow<T>(@this.Connection, @this.SQL, @this.ParameterCollection);
+                    resultValue = GetDataRow<T>(@this.Connection, @this.SQL, @this.ParameterCollection, @this.SQLiteParameter);
                 }
                 else if (typeof(T) == typeof(ICollectionView))
                 {
-                    resultValue = GetCollectionView<T>(@this.Connection, @this.SQL, @this.ParameterCollection);
+                    resultValue = GetCollectionView<T>(@this.Connection, @this.SQL, @this.ParameterCollection, @this.SQLiteParameter);
                 }
                 else if (typeof(T) == typeof(DataTable))
                 {
-                    resultValue = GetDataTable<T>(@this.Connection, @this.SQL, @this.ParameterCollection);
+                    resultValue = GetDataTable<T>(@this.Connection, @this.SQL, @this.ParameterCollection, @this.SQLiteParameter);
                 }
                 else if (typeof(T).IsGenericType == true && typeof(T).GetGenericTypeDefinition() == typeof(List<>) && typeof(T).GetGenericArguments()[0].Namespace != "System")
                 {
-                    resultValue = GetListOfTGeneric<T>(@this.Connection, @this.SQL, @this.ParameterCollection);
+                    resultValue = GetListOfTGeneric<T>(@this.Connection, @this.SQL, @this.ParameterCollection, @this.SQLiteParameter);
                 }
                 else if (typeof(T).IsGenericType == true && typeof(T).GetGenericTypeDefinition() == typeof(List<>) && typeof(T).GetGenericArguments()[0].Namespace == "System")
                 {
-                    resultValue = GetListOfTNonGeneric<T>(@this.Connection, @this.SQL, @this.ParameterCollection);
+                    resultValue = GetListOfTNonGeneric<T>(@this.Connection, @this.SQL, @this.ParameterCollection, @this.SQLiteParameter);
                 }
                 else if (typeof(T).IsGenericType == true && typeof(T).GetGenericTypeDefinition() == typeof(Dictionary<,>))
                 {
-                    resultValue = GetDictionary<T>(@this.Connection, @this.SQL, @this.ParameterCollection);
+                    resultValue = GetDictionary<T>(@this.Connection, @this.SQL, @this.ParameterCollection, @this.SQLiteParameter);
                 }
             }
             catch (Exception ex)
@@ -222,7 +222,7 @@ namespace System.Data.SQLite
             return new RecordSetResult<T>(@this.Connection, resultValue, @this.SQL);
         }
 
-        private static T GetScalar<T>(SQLiteConnection connection, string sql, Dictionary<string, object> parameterCollection)
+        private static T GetScalar<T>(SQLiteConnection connection, string sql, Dictionary<string, object> parameterCollection, SQLiteParameter[] sqliteParameter)
         {
             object getAs = null;
 
@@ -287,7 +287,7 @@ namespace System.Data.SQLite
             return (T)getAs;
         }
 
-        private static T GetDataRow<T>(SQLiteConnection connection, string sql, Dictionary<string, object> parameterCollection)
+        private static T GetDataRow<T>(SQLiteConnection connection, string sql, Dictionary<string, object> parameterCollection, SQLiteParameter[] sqliteParameter)
         {
             object result = null;
 
@@ -353,7 +353,7 @@ namespace System.Data.SQLite
             return (T)result;
         }
 
-        private static T GetCollectionView<T>(SQLiteConnection connection, string sql, Dictionary<string, object> parameterCollection)
+        private static T GetCollectionView<T>(SQLiteConnection connection, string sql, Dictionary<string, object> parameterCollection, SQLiteParameter[] sqliteParameter)
         {
             ICollectionView result;
 
@@ -462,7 +462,7 @@ namespace System.Data.SQLite
             return (T)result;
         }
 
-        private static T GetDataTable<T>(SQLiteConnection connection, string sql, Dictionary<string, object> parameterCollection)
+        private static T GetDataTable<T>(SQLiteConnection connection, string sql, Dictionary<string, object> parameterCollection, SQLiteParameter[] sqliteParameter)
         {
             object result = null;
 
@@ -527,7 +527,7 @@ namespace System.Data.SQLite
             return (T)result;
         }
 
-        private static T GetListOfTGeneric<T>(SQLiteConnection connection, string sql, Dictionary<string, object> parameterCollection)
+        private static T GetListOfTGeneric<T>(SQLiteConnection connection, string sql, Dictionary<string, object> parameterCollection, SQLiteParameter[] sqliteParameter)
         {
             T result = default;
 
@@ -688,7 +688,7 @@ namespace System.Data.SQLite
             return (T)Convert.ChangeType(result, typeof(T));
         }
 
-        private static T GetListOfTNonGeneric<T>(SQLiteConnection connection, string sql, Dictionary<string, object> parameterCollection)
+        private static T GetListOfTNonGeneric<T>(SQLiteConnection connection, string sql, Dictionary<string, object> parameterCollection, SQLiteParameter[] sqliteParameter)
         {
             IList result = default;
 
@@ -773,7 +773,7 @@ namespace System.Data.SQLite
             return (T)Convert.ChangeType(result, typeof(T));
         }
 
-        private static T GetDictionary<T>(SQLiteConnection connection, string sql, Dictionary<string, object> parameterCollection)
+        private static T GetDictionary<T>(SQLiteConnection connection, string sql, Dictionary<string, object> parameterCollection, SQLiteParameter[] sqliteParameter)
         {
             T result = default;
 
@@ -948,7 +948,7 @@ namespace System.Data.SQLite
             {
                 if (typeof(T).IsGenericType == false && typeof(T).IsPrimitive == true && typeof(T).Namespace == "System")
                 {
-                    resultValue = ExecuteNonQuery<T>(@this.Connection, @this.SQL, @this.SQLiteParameter);
+                    resultValue = ExecuteNonQuery<T>(@this.Connection, @this.SQL, @this.ParameterCollection, @this.SQLiteParameter);
                 }
             }
             catch (Exception)
@@ -960,7 +960,7 @@ namespace System.Data.SQLite
             return new RecordSetResult<T>(@this.Connection, resultValue, @this.SQL);
         }
 
-        private static T ExecuteNonQuery<T>(SQLiteConnection connection, string sql, SQLiteParameter[] parameterCollection)
+        private static T ExecuteNonQuery<T>(SQLiteConnection connection, string sql, Dictionary<string, object> parameterCollection, SQLiteParameter[] sqliteParameter)
         {
             object getAs = null;
 
@@ -968,9 +968,39 @@ namespace System.Data.SQLite
             {
                 using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
                 {
-                    if (parameterCollection != null && parameterCollection.Length > 0)
+                    if (parameterCollection != null && parameterCollection.Count > 0)
                     {
-                        cmd.Parameters.AddRange(parameterCollection);
+                        cmd.Parameters.Clear();
+                        foreach (KeyValuePair<string, object> item in parameterCollection)
+                        {
+                            cmd.Parameters.AddWithValue(item.Key, item.Value);
+                        }
+
+                        foreach (SQLiteParameter parameter in cmd.Parameters)
+                        {
+                            if (parameter.IsNullable == false)
+                            {
+                                if (parameter.DbType.ToString() == typeof(DateTime).Name)
+                                {
+                                    if ((DateTime)parameter.Value == DateTime.MinValue)
+                                    {
+                                        parameter.Value = new DateTime(1900, 1, 1);
+                                    }
+                                }
+                                else
+                                {
+                                    if (parameter.Value == DBNull.Value || parameter.Value == null)
+                                    {
+                                        parameter.Value = DBNull.Value;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (sqliteParameter != null && sqliteParameter.Length > 0)
+                    {
+                        cmd.Parameters.AddRange(sqliteParameter);
                     }
 
                     int? result = cmd.ExecuteNonQuery();

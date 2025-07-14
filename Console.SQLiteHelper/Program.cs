@@ -222,7 +222,6 @@ namespace Console.SQLiteHelper
                 sql = "SELECT Id, Name, Birthday, Age FROM TAB_Contact LIMIT 1";
                 DataRow selectLimitDataRow = connection.RecordSet<DataRow>(sql).Get().Result;
 
-                /*
                 sql = "SELECT Age, Name FROM TAB_Contact LIMIT 1";
                 Dictionary<int,string> selectLimitDictA = connection.RecordSet<Dictionary<int, string>>(sql).Get().Result;
 
@@ -231,7 +230,7 @@ namespace Console.SQLiteHelper
 
                 sql = "SELECT Name, upper(Name) FROM TAB_Contact LIMIT 1";
                 Dictionary<string, string> selectLimitDictC = connection.RecordSet<Dictionary<string, string>>(sql).Get().Result;
-                */
+
                 sql = "SELECT Name, upper(Name) FROM TAB_Contact LIMIT 1";
                 Dictionary<string, object> selectLimitDictD = connection.RecordSet<Dictionary<string, object>>(sql).Get().Result;
 
